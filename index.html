@@ -13,3 +13,71 @@
   </style>
 </head>
 <body>
+<h1>Say It With Flowers</h1>
+  <p>Pick a flower, then click the garden to plant it.</p>
+
+  <div id="buttons"></div>
+  <div id="garden"></div>
+  <h2 id="message"></h2>
+  <button onclick="clearGarden()">Clear garden</button>
+
+  <script>
+    // Each flower has an emoji and a meaning
+    var flowers = {
+      "🌹": "love",
+      "🌻": "loyalty",
+      "🌼": "a fresh start",
+      "🪻": "calm",
+      "🌷": "good news"
+    };
+
+    var selected = "🌹";
+    var planted = [];
+
+    var garden = document.getElementById("garden");
+    var message = document.getElementById("message");
+    var buttons = document.getElementById("buttons");
+
+    // Make a button for each flower
+    for (var emoji in flowers) {
+      var b = document.createElement("button");
+      b.textContent = emoji + " " + flowers[emoji];
+      b.dataset.emoji = emoji;
+      b.onclick = function () {
+        selected = this.dataset.emoji;
+        var all = buttons.children;
+        for (var i = 0; i < all.length; i++) all[i].classList.remove("active");
+        this.classList.add("active");
+      };
+      buttons.appendChild(b);
+    }
+    buttons.children[0].classList.add("active");
+
+    // Plant a flower where you click
+    garden.onclick = function (e) {
+      var box = garden.getBoundingClientRect();
+      var f = document.createElement("div");
+      f.className = "flower";
+      f.textContent = selected;
+      f.style.left = (e.clientX - box.left) + "px";
+      f.style.top = (e.clientY - box.top) + "px";
+      garden.appendChild(f);
+
+      if (planted.indexOf(selected) === -1) planted.push(selected);
+      showMessage();
+    };
+
+    function showMessage() {
+      var meanings = planted.map(function (e) { return flowers[e]; });
+      message.textContent = "Your garden says: " + meanings.join(", ") + ".";
+    }
+
+    function clearGarden() {
+      garden.innerHTML = "";
+      planted = [];
+      message.textContent = "";
+    }
+  </script>
+
+</body>
+</html>
